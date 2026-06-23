@@ -1,24 +1,28 @@
-FROM elixir:1.8-alpine
+FROM elixir:1.14.5-otp-25
 
-WORKDIR /opt/app
+# System deps (NO alpine — avoids SSL issues)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    inotify-tools \
+    && rm -rf /var/lib/apt/lists/*
 
-ENV HOME /opt/app
-ENV MIX_HOME=/opt/mix
-ENV HEX_HOME=/opt/hex
-ENV MIX_ENV=prod
+WORKDIR /app
 
-RUN apk add git
+# Hex/Rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
 
-RUN mix local.hex --force && mix local.rebar --force
+# Copy dependency files first (cache-friendly)
+COPY mix.exs mix.lock ./
 
-ADD mix.exs ./
-ADD mix.lock ./
+# Install deps (includes your vendor override if declared in mix.exs)
+RUN mix deps.get
 
-RUN mix do deps.get, deps.compile
+# Now copy everything INCLUDING your patch
+COPY . .
 
-COPY frontend/dist/ /opt/app/frontend/dist/
-COPY config/ /opt/app/config/
+# Compile everything (including vendor/easy_ssl)
+RUN mix compile
 
-COPY lib /opt/app/lib/
-
-CMD mix run --no-halt
+CMD ["mix", "run", "--no-halt"]
