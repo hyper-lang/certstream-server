@@ -24,7 +24,7 @@ defmodule Certstream.Mixfile do
   defp deps do
     [
       {:cowboy, "~> 2.8"},
-      {:easy_ssl, "~> 1.1"},
+      {:easy_ssl, path: "vendor/easy_ssl"},
       {:honeybadger, "~> 0.14"},
       {:httpoison, "~> 1.7"},
       {:instruments, "~> 1.1"},
