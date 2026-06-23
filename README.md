@@ -1,3 +1,5 @@
+# FORK OF [Calidog's Certstream Server](https://github.com/calidog/certstream-server)! Copied repo to patch old easy_ssl dependency bug
+
 <p align="center">
     <img align="center" src="https://user-images.githubusercontent.com/1072598/31840406-1fe37936-b59a-11e7-939a-71d36e584fc9.png" />
     <h3 align="center">CertStream-Server</h3>
